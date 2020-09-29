@@ -107,14 +107,13 @@ class QRView(private val registrar: PluginRegistry.Registrar, id: Int) :
     }
 
     override fun getView(): View {
-        return initBarCodeView()?.apply {
-            resume()
-        }!!
+        return initBarCodeView()!!
     }
 
     private fun initBarCodeView(): BarcodeView? {
         if (barcodeView == null) {
             barcodeView = createBarCodeView()
+            barcodeView!!.resume()
         }
         return barcodeView
     }
