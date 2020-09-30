@@ -70,7 +70,7 @@ public class QRView:NSObject,FlutterPlatformView {
                 previewLayer.frame = previewView.bounds;
             }
         } else {
-            scanner = MTBBarcodeScanner(previewView: previewView)
+            scanner = MTBBarcodeScanner(metadataObjectTypes: [AVMetadataObject.ObjectType.qr.rawValue], previewView: previewView)
             MTBBarcodeScanner.requestCameraPermission(success: isCameraAvailable)
         }
     }
