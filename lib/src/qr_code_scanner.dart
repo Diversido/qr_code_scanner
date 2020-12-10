@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'qr_camera_facing.dart';
+
 typedef QRViewCreatedCallback = void Function(QRViewController);
 
 class QRView extends StatefulWidget {
@@ -133,6 +135,16 @@ class QRViewController {
 
   void resumeCamera() {
     _channel.invokeMethod('resumeCamera');
+  }
+
+  Future<QrCameraFacing> get cameraFacing async {
+    var name = await _channel.invokeMethod<String>('getCameraFacing');
+    return QrCameraFacing.fromName(name);
+  }
+
+  Future<bool> setCameraFacing(QrCameraFacing facing) async {
+    var success = await _channel.invokeMethod<bool>('setCameraFacing', facing.name);
+    return success;
   }
 
   void dispose() {

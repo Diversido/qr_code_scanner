@@ -68,18 +68,30 @@ class _QRViewExampleState extends State<QRViewExample> {
                       Container(
                         margin: EdgeInsets.all(8),
                         child: RaisedButton(
-                          onPressed: () {
+                          onPressed: () async {
                             if (controller != null) {
-                              controller.flipCamera();
-                              if (_isBackCamera(cameraState)) {
+                              var facing = await controller.cameraFacing;
+                              if (facing == QrCameraFacing.back) {
+                                await controller.setCameraFacing(QrCameraFacing.front);
                                 setState(() {
                                   cameraState = frontCamera;
                                 });
                               } else {
+                                await controller.setCameraFacing(QrCameraFacing.back);
                                 setState(() {
                                   cameraState = backCamera;
                                 });
                               }
+                              // controller.flipCamera();
+                              // if (_isBackCamera(cameraState)) {
+                              //   setState(() {
+                              //     cameraState = frontCamera;
+                              //   });
+                              // } else {
+                              //   setState(() {
+                              //     cameraState = backCamera;
+                              //   });
+                              // }
                             }
                           },
                           child:

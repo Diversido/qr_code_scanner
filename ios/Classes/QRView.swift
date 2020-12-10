@@ -54,6 +54,14 @@ public class QRView:NSObject,FlutterPlatformView {
                     self?.pauseCamera()
                 case "resumeCamera":
                     self?.resumeCamera()
+                case "getCameraFacing":
+                    let cameraFacingName = self?.getCameraFacing()
+                    result(cameraFacingName)
+                case "setCameraFacing":
+                    let cameraFacingName = call.arguments as! String
+                    if let success: Bool = self?.setCameraFacing(cameraFacingName: cameraFacingName) {
+                        result(success)
+                    }
                 default:
                     result(FlutterMethodNotImplemented)
                     return
@@ -82,7 +90,29 @@ public class QRView:NSObject,FlutterPlatformView {
             }
         }
     }
-    
+
+    func getCameraFacing() -> String {
+        if let sc: MTBBarcodeScanner = scanner {
+            return sc.camera == MTBCamera.front
+                ? "front"
+                : "back"
+        }
+        return ""
+    }
+
+    func setCameraFacing(cameraFacingName: String) -> Bool {
+        if let sc: MTBBarcodeScanner = scanner {
+            let facing: MTBCamera = cameraFacingName == "front" ? MTBCamera.front : MTBCamera.back
+            do {
+                try sc.setCamera(facing)
+            } catch {
+                // failed to set camera
+                return false;
+            }
+        }
+        return true
+    }
+
     func toggleFlash(){
         if let sc: MTBBarcodeScanner = scanner {
             if sc.hasTorch() {

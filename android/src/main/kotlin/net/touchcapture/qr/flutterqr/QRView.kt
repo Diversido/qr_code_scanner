@@ -83,6 +83,31 @@ class QRView(private val registrar: PluginRegistry.Registrar, id: Int) :
         barcodeView?.resume()
     }
 
+    fun getCameraFacing(): String {
+        var settings = barcodeView?.cameraSettings
+        if (settings?.requestedCameraId == CameraInfo.CAMERA_FACING_FRONT) {
+            return "front"
+        } else {
+            return "back"
+        }
+    }
+
+    fun setCameraFacing(cameraFacingName: String): Boolean {
+        barcodeView?.pause()
+        var settings = barcodeView?.cameraSettings
+
+        if (cameraFacingName == "front") {
+            settings?.requestedCameraId = CameraInfo.CAMERA_FACING_FRONT
+        } else {
+            settings?.requestedCameraId = CameraInfo.CAMERA_FACING_BACK
+        }
+
+        barcodeView?.cameraSettings = settings
+        barcodeView?.resume()
+
+        return true;
+    }
+
     private fun toggleFlash() {
         if (hasFlash()) {
             barcodeView?.setTorch(!isTorchOn)
@@ -175,6 +200,14 @@ class QRView(private val registrar: PluginRegistry.Registrar, id: Int) :
             }
             "resumeCamera" -> {
                 resumeCamera()
+            }
+            "getCameraFacing" -> {
+                val cameraFacingName = getCameraFacing()
+                result.success(cameraFacingName)
+            }
+            "setCameraFacing" -> {
+                val success = setCameraFacing(call.arguments.toString())
+                result.success(success)
             }
         }
     }
