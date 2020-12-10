@@ -149,7 +149,11 @@ class _QRViewExampleState extends State<QRViewExample> {
     // we need to listen for Flutter SizeChanged notifiation and update controller
     return NotificationListener<SizeChangedLayoutNotification>(
         onNotification: (notification) {
-          Future.microtask(() => controller?.updateDimensions(qrKey));
+          Future.microtask(() {
+            controller?.pauseCamera();
+            controller?.updateDimensions(qrKey);
+            controller?.resumeCamera();
+          });
           return false;
         },
         child: SizeChangedLayoutNotifier(
